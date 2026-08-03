@@ -63,7 +63,10 @@ impl TestVectorIndexBuilder {
     }
 
     pub(crate) fn build(self) -> crate::Result<TestVectorIndex> {
-        let vector_options = VectorOptions::new(grid2d::DIM, self.metric).with_dtype(self.dtype);
+        let vector_options = VectorOptions::default()
+            .with_dtype(self.dtype)
+            .with_dim(grid2d::DIM)
+            .with_metric(self.metric);
         let mut schema_builder = Schema::builder();
         let embedding_field =
             schema_builder.add_vector_field(EMBEDDING_FIELD_NAME, vector_options.clone());
@@ -541,7 +544,11 @@ fn ingest_rejects_non_finite_cosine_vector() -> crate::Result<()> {
     for bad in [f32::NAN, f32::INFINITY, f32::NEG_INFINITY] {
         // L2: same vector is accepted; nothing normalizes, data is stored raw.
         let mut schema_builder = Schema::builder();
-        let l2_field = schema_builder.add_vector_field("l2", VectorOptions::new(2, Metric::L2));
+        let l2_field = schema_builder.add_vector_field(
+            "l2", 
+            VectorOptions::default()
+            .with_dim(2)
+            .with_metric(Metric::L2));
         let schema = schema_builder.build();
         let index = Index::builder().schema(schema).create_in_ram()?;
         let mut writer = index.writer_with_num_threads(1, 15_000_000)?;
@@ -553,7 +560,11 @@ fn ingest_rejects_non_finite_cosine_vector() -> crate::Result<()> {
         // Cosine: rejected.
         let mut schema_builder = Schema::builder();
         let cos_field =
-            schema_builder.add_vector_field("cos", VectorOptions::new(2, Metric::Cosine));
+            schema_builder.add_vector_field(
+            "cos", 
+            VectorOptions::default()
+            .with_dim(2)
+            .with_metric(Metric::Cosine));
         let schema = schema_builder.build();
         let index = Index::builder().schema(schema).create_in_ram()?;
         let mut writer = index.writer_with_num_threads(1, 15_000_000)?;
@@ -577,7 +588,11 @@ fn ingest_rejects_non_finite_cosine_vector() -> crate::Result<()> {
 fn ingest_accepts_zero_vector() -> crate::Result<()> {
     let mut schema_builder = Schema::builder();
     let embedding_field =
-        schema_builder.add_vector_field("embedding", VectorOptions::new(2, Metric::Cosine));
+        schema_builder.add_vector_field(
+            "embedding", 
+            VectorOptions::default()
+            .with_dim(2)
+            .with_metric(Metric::Cosine));
     let schema = schema_builder.build();
     let index = Index::builder().schema(schema).create_in_ram()?;
     let mut writer = index.writer_with_num_threads(1, 15_000_000)?;

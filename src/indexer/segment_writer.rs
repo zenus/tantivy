@@ -243,6 +243,10 @@ impl SegmentWriter {
                 continue;
             }
 
+            if field_entry.is_vector() {
+                continue;
+            }
+
             let (term_buffer, ctx) = (&mut self.term_buffer, &mut self.ctx);
             let postings_writer: &mut dyn PostingsWriter =
                 self.per_field_postings_writers.get_for_field_mut(field);

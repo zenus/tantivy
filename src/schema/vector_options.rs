@@ -1,8 +1,9 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Copy, Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Copy, Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Default)]
 #[serde(rename_all = "snake_case")]
 pub enum VectorDType {
+    #[default]
     F32,
 }
 
@@ -17,38 +18,48 @@ impl VectorDType {
 /// Distance / similarity metric used when ranking vector field values.
 ///
 /// All metrics are presented to callers in a "higher is better" orientation.
-#[derive(Copy, Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Copy, Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Default)]
 #[serde(rename_all = "snake_case")]
 pub enum Metric {
     L2,
+    #[default]
     Cosine,
     Dot,
 }
 
-#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Default)]
 pub struct VectorOptions {
+    indexed: bool,
+    fast: bool,
     dim: usize,
     dtype: VectorDType,
     metric: Metric,
 }
 
 impl VectorOptions {
-    pub fn new(dim: usize, metric: Metric) -> VectorOptions {
-        VectorOptions {
-            dim,
-            dtype: VectorDType::F32,
-            metric,
-        }
+    /// Returns true iff the value is a fast field.
+    #[inline]
+    pub fn is_fast(&self) -> bool {
+        self.fast
     }
 
+    /// Returns true iff the value is indexed and therefore searchable.
+    #[inline]
+    pub fn is_indexed(&self) -> bool {
+        self.indexed
+    }
+
+    #[inline]
     pub fn dim(&self) -> usize {
         self.dim
     }
 
+    #[inline]
     pub fn dtype(&self) -> VectorDType {
         self.dtype
     }
 
+    #[inline]
     pub fn metric(&self) -> Metric {
         self.metric
     }
@@ -58,6 +69,7 @@ impl VectorOptions {
         self
     }
 
+    #[inline]
     pub fn bytes_per_vector(&self) -> usize {
         self.dim * self.dtype.size_bytes()
     }
@@ -71,16 +83,47 @@ impl VectorOptions {
             (Metric::Cosine, VectorDType::F32)
         )
     }
+
+    pub fn set_indexed(mut self) -> Self {
+        self.indexed = true;
+        self
+    }
+
+    pub fn set_fast(mut self) -> Self {
+        self.fast = true;
+        self
+    }
+
+    pub fn with_dim(mut self, dim: usize) -> Self {
+        self.dim = dim;
+        self
+    }
+
+    // pub fn set_dim(mut self, dim: usize) -> Self {
+    //     self.dim = dim;
+    //     self
+    // }
+
+    pub fn with_metric(mut self, metric: Metric) -> Self {
+        self.metric = metric;
+        self
+    }
+
+    // pub fn set_metric(mut self, metric: Metric) -> Self {
+    //     self.metric = metric;
+    //     self
+    // }
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::schema::{Metric, Schema, VectorOptions};
+    use crate::schema::{Schema, VectorOptions};
 
     #[test]
     fn test_vector_field_schema_round_trip() {
         let mut schema_builder = Schema::builder();
-        schema_builder.add_vector_field("embedding", VectorOptions::new(128, Metric::Cosine));
+        let options =  VectorOptions::default().with_dim(128);
+        schema_builder.add_vector_field("embedding", options);
         let schema = schema_builder.build();
 
         let schema_json = serde_json::to_string_pretty(&schema).unwrap();
@@ -89,6 +132,8 @@ mod tests {
     "name": "embedding",
     "type": "vector",
     "options": {
+      "indexed": true,
+      "fast": true,
       "dim": 128,
       "dtype": "f32",
       "metric": "cosine"

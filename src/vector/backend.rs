@@ -898,7 +898,8 @@ mod tests {
         let mut sb = Schema::builder();
         let embed_field = sb.add_vector_field(
             "embedding",
-            VectorOptions::new(2, metric).with_dtype(VectorDType::F32),
+            VectorOptions::default()
+            .with_dtype(VectorDType::F32).with_dim(2).with_metric(metric),
         );
         let label_field = sb.add_text_field("label", STRING | STORED);
         let schema = sb.build();
@@ -1263,7 +1264,10 @@ mod tests {
         let mut sb = Schema::builder();
         let embed_field = sb.add_vector_field(
             "embedding",
-            VectorOptions::new(2, Metric::L2).with_dtype(VectorDType::F32),
+            VectorOptions::default()
+            .with_dtype(VectorDType::F32)
+            .with_dim(2)
+            .with_metric(Metric::L2),
         );
         let label_field = sb.add_text_field("label", STRING | STORED);
         let schema = sb.build();
@@ -1354,11 +1358,17 @@ mod tests {
         let mut sb = Schema::builder();
         let doomed_field = sb.add_vector_field(
             "embedding_doomed",
-            VectorOptions::new(2, Metric::L2).with_dtype(VectorDType::F32),
+            VectorOptions::default()
+            .with_dtype(VectorDType::F32)
+            .with_dim(2)
+            .with_metric(Metric::L2),
         );
         let kept_field = sb.add_vector_field(
             "embedding_kept",
-            VectorOptions::new(2, Metric::L2).with_dtype(VectorDType::F32),
+            VectorOptions::default()
+            .with_dtype(VectorDType::F32)
+            .with_dim(2)
+            .with_metric(Metric::L2),
         );
         let label_field = sb.add_text_field("label", STRING | STORED);
         let schema = sb.build();
@@ -2546,7 +2556,10 @@ mod tests {
         let mut sb = Schema::builder();
         let embed_field = sb.add_vector_field(
             "embedding",
-            VectorOptions::new(dim, Metric::L2).with_dtype(VectorDType::F32),
+            VectorOptions::default()
+            .with_dtype(VectorDType::F32)
+            .with_dim(dim)
+            .with_metric(Metric::L2),
         );
         let label_field = sb.add_text_field("label", STRING | STORED);
         let index = Index::create_in_ram(sb.build());

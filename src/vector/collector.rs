@@ -433,7 +433,10 @@ mod ivf_e2e_tests {
     }
 
     fn tie_heavy_index(ids: &[u64]) -> crate::Result<(Index, Field, Field)> {
-        let vector_options = VectorOptions::new(2, Metric::L2).with_dtype(VectorDType::F32);
+        let vector_options = VectorOptions::default()
+            .with_dtype(VectorDType::F32)
+            .with_dim(2)
+            .with_metric(Metric::L2);
         let mut schema_builder = Schema::builder();
         let embedding_field = schema_builder.add_vector_field("embedding", vector_options);
         let id_field = schema_builder.add_u64_field("id", FAST);
@@ -587,7 +590,10 @@ mod ivf_e2e_tests {
 
     #[test]
     fn e2e_ivf_cluster_order_keeps_the_lowest_doc_of_a_tie() -> crate::Result<()> {
-        let vector_options = VectorOptions::new(2, Metric::L2).with_dtype(VectorDType::F32);
+        let vector_options = VectorOptions::default()
+            .with_dtype(VectorDType::F32)
+            .with_dim(2)
+            .with_metric(Metric::L2);
         let mut schema_builder = Schema::builder();
         let embedding_field = schema_builder.add_vector_field("embedding", vector_options);
         let settings = IndexSettings {
@@ -656,7 +662,10 @@ mod ivf_e2e_tests {
     fn e2e_tie_break_on_segment_local_term_ordinals() -> crate::Result<()> {
         use crate::collector::sort_key::SortByString;
 
-        let vector_options = VectorOptions::new(2, Metric::L2).with_dtype(VectorDType::F32);
+        let vector_options = VectorOptions::default()
+            .with_dtype(VectorDType::F32)
+            .with_dim(2)
+            .with_metric(Metric::L2);
         let mut schema_builder = Schema::builder();
         let embedding_field = schema_builder.add_vector_field("embedding", vector_options);
         let city_field = schema_builder.add_text_field("city", crate::schema::STRING | FAST);
@@ -758,7 +767,10 @@ mod ivf_e2e_tests {
     fn e2e_mixed_flat_and_ivf_matches_global_oracle() -> crate::Result<()> {
         let centroids: Vec<[f32; 2]> = vec![[0.0, 0.0], [10.0, 10.0]];
         let metric = Metric::L2;
-        let vector_options = VectorOptions::new(2, metric).with_dtype(VectorDType::F32);
+        let vector_options = VectorOptions::default()
+            .with_dtype(VectorDType::F32)
+            .with_dim(2)
+            .with_metric(metric);
         let mut schema_builder = Schema::builder();
         let embedding_field = schema_builder.add_vector_field("embedding", vector_options);
         let label_field = schema_builder.add_text_field("label", STRING | STORED);

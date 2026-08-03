@@ -13,8 +13,7 @@ use super::IntoIpv6Addr;
 use crate::schema::bytes_options::BytesOptions;
 use crate::schema::facet_options::FacetOptions;
 use crate::schema::{
-    DateOptions, Facet, IndexRecordOption, JsonObjectOptions, NumericOptions, OwnedValue,
-    TextFieldIndexing, TextOptions, VectorOptions,
+    DateOptions, Facet, IndexRecordOption, JsonObjectOptions, NumericOptions, OwnedValue, TextFieldIndexing, TextOptions, VectorOptions,
 };
 use crate::time::format_description::well_known::Rfc3339;
 use crate::time::OffsetDateTime;
@@ -256,7 +255,7 @@ impl FieldType {
             FieldType::Bytes(ref bytes_options) => bytes_options.is_indexed(),
             FieldType::JsonObject(ref json_object_options) => json_object_options.is_indexed(),
             FieldType::IpAddr(ref ip_addr_options) => ip_addr_options.is_indexed(),
-            FieldType::Vector(_) => false,
+            FieldType::Vector(ref vector_options) => vector_options.is_indexed(),
         }
     }
 
@@ -308,7 +307,7 @@ impl FieldType {
             FieldType::IpAddr(ref ip_addr_options) => ip_addr_options.is_fast(),
             FieldType::Facet(_) => true,
             FieldType::JsonObject(ref json_object_options) => json_object_options.is_fast(),
-            FieldType::Vector(_) => false,
+            FieldType::Vector(ref vector_options) => vector_options.is_fast(),
         }
     }
 

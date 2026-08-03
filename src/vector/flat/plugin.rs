@@ -26,7 +26,9 @@ pub(crate) fn merge_flat(ctx: &PluginMergeContext) -> crate::Result<()> {
     let has_vector_field = ctx
         .schema
         .fields()
-        .any(|(_, entry)| matches!(entry.field_type(), FieldType::Vector(_)));
+        .any(|(_, entry)| 
+            matches!(entry.field_type(), FieldType::Vector(_)) && entry.is_indexed()
+        );
     if !has_vector_field {
         return Ok(());
     }
@@ -46,6 +48,9 @@ pub(crate) fn merge_flat(ctx: &PluginMergeContext) -> crate::Result<()> {
     let num_target_docs: u32 = ctx.readers.iter().map(|r| r.num_docs()).sum::<u32>();
 
     for (field, entry) in ctx.schema.fields() {
+        if !entry.is_indexed() {
+            continue;
+        }
         let _opts = match entry.field_type() {
             FieldType::Vector(opts) => opts,
             _ => continue,

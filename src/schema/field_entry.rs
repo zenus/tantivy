@@ -120,6 +120,11 @@ impl FieldEntry {
         }
     }
 
+    /// Returns true if the field is a vector field
+    pub fn is_vector(&self) -> bool {
+        matches!(self.field_type, FieldType::Vector(_))
+    }
+
     /// Returns true if the field is stored
     #[inline]
     pub fn is_stored(&self) -> bool {

@@ -62,14 +62,16 @@ impl FlatVecWriter {
         let mut fields = BTreeMap::new();
         for (field, entry) in schema.fields() {
             if let FieldType::Vector(opts) = entry.field_type() {
-                fields.insert(
-                    field,
-                    FieldBuffer {
-                        present_doc_ids: Vec::new(),
-                        row_bytes: Vec::new(),
-                        opts: opts.clone(),
-                    },
-                );
+                if entry.is_indexed() {
+                    fields.insert(
+                        field,
+                        FieldBuffer {
+                            present_doc_ids: Vec::new(),
+                            row_bytes: Vec::new(),
+                            opts: opts.clone(),
+                        },
+                    );
+                }
             }
         }
         Self {

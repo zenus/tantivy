@@ -483,7 +483,9 @@ mod tests {
 
     #[test]
     fn maybe_normalize_routes_only_cosine_f32() {
-        let opts = VectorOptions::new(3, Metric::Cosine);
+        let opts = VectorOptions::default()
+            .with_dim(3)
+            .with_metric(Metric::Cosine);
         let mut buf = bytes(&[3.0_f32, 0.0, 4.0]);
         assert_eq!(
             maybe_normalize_bytes(&opts, &mut buf),
@@ -499,7 +501,9 @@ mod tests {
 
     #[test]
     fn maybe_normalize_is_noop_for_l2() {
-        let opts = VectorOptions::new(3, Metric::L2);
+        let opts = VectorOptions::default()
+            .with_dim(3)
+            .with_metric(Metric::L2);
         let input = [3.0_f32, 0.0, 4.0];
         let mut buf = bytes(&input);
         maybe_normalize_bytes(&opts, &mut buf);
@@ -512,7 +516,9 @@ mod tests {
 
     #[test]
     fn maybe_normalize_is_noop_for_dot() {
-        let opts = VectorOptions::new(3, Metric::Dot);
+        let opts = VectorOptions::default()
+            .with_dim(3)
+            .with_metric(Metric::Dot);
         let input = [3.0_f32, 0.0, 4.0];
         let mut buf = bytes(&input);
         maybe_normalize_bytes(&opts, &mut buf);

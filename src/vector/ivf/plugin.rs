@@ -189,7 +189,8 @@ pub(crate) fn merge_ivf(
     let has_vector_field = ctx
         .schema
         .fields()
-        .any(|(_, entry)| matches!(entry.field_type(), FieldType::Vector(_)));
+        .any(|(_, entry)| matches!(entry.field_type(), FieldType::Vector(_)) && entry.is_indexed());
+
     if !has_vector_field {
         return Ok(());
     }
@@ -222,6 +223,9 @@ pub(crate) fn merge_ivf(
     let mut centroids_write = CompositeWrite::wrap(centroids_file);
 
     for (field, entry) in ctx.schema.fields() {
+        if !entry.is_indexed() {
+            continue;
+        }
         let opts = match entry.field_type() {
             FieldType::Vector(opts) => opts,
             _ => continue,
