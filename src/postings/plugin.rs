@@ -338,7 +338,7 @@ fn write_postings_merge(
             return Err(crate::TantivyError::Cancelled);
         }
         let fieldnorm_reader = fieldnorm_readers.get_field(field)?;
-        if field_entry.is_indexed() {
+        if field_entry.is_indexed() && !field_entry.is_vector(){
             write_postings_for_field(
                 readers,
                 schema,
