@@ -77,11 +77,15 @@ impl FileHandle for WrapFile {
         let end = range.end.min(file_len);
 
         // Ensure the start is before the end of the range
-        if start >= end {
+        if start > end {
             return Err(io::Error::new(io::ErrorKind::InvalidInput, "Invalid range"));
         }
 
         let mut buffer = vec![0; end - start];
+
+        if start == end {
+            return Ok(OwnedBytes::new(buffer));
+        }
 
         #[cfg(unix)]
         {

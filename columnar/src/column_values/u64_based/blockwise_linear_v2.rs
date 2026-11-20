@@ -37,6 +37,8 @@ use crate::column_values::u64_based::line::Line;
 use crate::column_values::u64_based::{ColumnCodec, ColumnCodecEstimator, ColumnStats};
 use crate::column_values::{ColumnValues, VecColumn};
 
+
+
 const BLOCK_SIZE: u32 = 512u32;
 /// Bytes per block when bit_width=1: one bit per value × BLOCK_SIZE values / 8 bits-per-byte.
 /// Each additional bit of `bit_width` adds another `BYTES_PER_BLOCK_BIT` bytes.
