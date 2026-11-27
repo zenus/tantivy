@@ -109,6 +109,7 @@ impl CompositeFile {
     /// Opens a composite file stored in a given
     /// `FileSlice`.
     pub fn open(data: &FileSlice) -> io::Result<CompositeFile> {
+        eprintln!("[CompositeFile]: {:?}", data);
         let end = data.len();
         let footer_len_data = data.slice_from(end - 4).read_bytes()?;
         let footer_len = u32::deserialize(&mut footer_len_data.as_slice())? as usize;
@@ -156,7 +157,9 @@ impl CompositeFile {
     /// Returns the `FileSlice` associated with
     /// a given `Field` and stored in a `CompositeFile`.
     pub fn open_read(&self, field: Field) -> Option<FileSlice> {
-        self.open_read_with_idx(field, 0)
+        let field_slice = self.open_read_with_idx(field, 0);
+        eprintln!("[CompositeFile]: Field {:?} {:?}", self.data, field_slice);
+        field_slice
     }
 
     /// Returns the `FileSlice` associated with
