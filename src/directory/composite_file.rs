@@ -109,7 +109,6 @@ impl CompositeFile {
     /// Opens a composite file stored in a given
     /// `FileSlice`.
     pub fn open(data: &FileSlice) -> io::Result<CompositeFile> {
-        eprintln!("[CompositeFile]: {:?}", data);
         let end = data.len();
         let footer_len_data = data.slice_from(end - 4).read_bytes()?;
         let footer_len = u32::deserialize(&mut footer_len_data.as_slice())? as usize;

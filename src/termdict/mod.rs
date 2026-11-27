@@ -86,7 +86,6 @@ pub struct TermDictionary(InnerTermDict);
 impl TermDictionary {
     /// Opens a `TermDictionary`.
     pub fn open(file: FileSlice) -> io::Result<Self> {
-        eprintln!("[TermDictionary]: {:?} ", file);
         let (main_slice, dict_type) = file.split_from_end(4);
         let mut dict_type = dict_type.read_bytes()?;
         let dict_type = u32::deserialize(&mut dict_type)?;
