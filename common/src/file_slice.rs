@@ -51,6 +51,10 @@ pub trait FileHandle: 'static + Send + Sync + HasLen + fmt::Debug {
     fn as_slice(&self) -> Option<&[u8]> {
         None
     }
+
+    fn read_cache_bytes(&self, range: Range<usize>) -> io::Result<OwnedBytes> {
+        self.read_bytes(range)
+    }
 }
 
 #[derive(Debug)]
@@ -255,6 +259,10 @@ impl FileSlice {
     /// to handle caching if needed.
     pub fn read_bytes(&self) -> io::Result<OwnedBytes> {
         self.data.read_bytes(self.range.clone())
+    }
+
+    pub fn read_cache_bytes(&self) -> io::Result<OwnedBytes> {
+        self.data.read_cache_bytes(self.range.clone())
     }
 
     #[doc(hidden)]
