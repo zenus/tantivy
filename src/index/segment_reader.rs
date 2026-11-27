@@ -602,7 +602,9 @@ impl SegmentReader {
     /// Opens one of the component files for reading.
     pub fn open_read(&self, component: SegmentComponent) -> Result<FileSlice, OpenReadError> {
         let path = self.relative_path(component);
-        self.index.directory().open_read(&path)
+        let file_slice = self.index.directory().open_read(&path);
+        eprintln!("[SegmentReader]: {:?} {:?}", file_slice, path.display());
+        file_slice
     }
 
     #[inline]

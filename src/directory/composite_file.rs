@@ -157,9 +157,7 @@ impl CompositeFile {
     /// Returns the `FileSlice` associated with
     /// a given `Field` and stored in a `CompositeFile`.
     pub fn open_read(&self, field: Field) -> Option<FileSlice> {
-        let field_slice = self.open_read_with_idx(field, 0);
-        eprintln!("[CompositeFile]: Field {:?} {:?}", self.data, field_slice);
-        field_slice
+        self.open_read_with_idx(field, 0)
     }
 
     /// Returns the `FileSlice` associated with
