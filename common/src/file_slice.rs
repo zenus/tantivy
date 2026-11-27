@@ -262,6 +262,7 @@ impl FileSlice {
     }
 
     pub fn read_cache_bytes(&self) -> io::Result<OwnedBytes> {
+        eprintln!("[FileSlice]: read cache {:?} {:?}", self.range, self.data);
         self.data.read_cache_bytes(self.range.clone())
     }
 
