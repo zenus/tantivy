@@ -311,7 +311,7 @@ impl BlockwiseLinearV2Reader {
         let entry = self
             .footer
             .slice(off..off + BLOCK_META_SIZE)
-            .read_bytes()
+            .read_cache_bytes()
             .expect("failed to read block meta");
         parse_block_meta(&entry)
     }
